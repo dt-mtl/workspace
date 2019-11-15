@@ -14,7 +14,8 @@ public class Assign4 {
 		Dice die1 = new Dice();
 		Dice die3 = new Dice();
 		
-		System.out.println(" the die roll is: "+die1);
+		for(int i=0;i<15;i++)
+			System.out.println(" the die roll is: "+die1.rollDice()+" they add to "+die1);
 		System.out.println(" the die roll is: "+die3);
 	}
 	
