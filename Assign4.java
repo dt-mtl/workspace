@@ -8,17 +8,21 @@
 // --------------------------------------------------------*/
 public class Assign4 {
 	public static void main(String[] args) {
-		banner();
+	   banner();
 		System.out.println("The default game board has 3 levels and each level has a 4x4 board.\n"+
 				"You can use this default board size or change the size");
 		Dice die1 = new Dice();
 		Dice die3 = new Dice();
-		
+	    Board map = new Board();
+	/*	
 		for(int i=0;i<15;i++)
 			System.out.println(" the die roll is: "+die1.rollDice()+" they add to "+die1);
+	*/
 		System.out.println(" the die roll is: "+die3);
+		System.out.println(" the map looks like:\n"+map);
+		
+		
 	}
-	
 	
 	//method that outputs the banner
 	static void banner() {
