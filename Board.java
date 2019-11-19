@@ -16,9 +16,8 @@ public class Board {
 	
 	//Default Constructor
 	public Board(){
-		level=MIN_LEVEL;
-		size=4;
-		createBoard(size,level);
+		
+		createBoard(MIN_SIZE,MIN_LEVEL);
 	}
 	//user defined constructor
 	public Board(int l, int x){
@@ -29,6 +28,23 @@ public class Board {
 	//method to create board
 	private void createBoard(int bSize,int bLevel) {
 		board=new int[bLevel][bSize][bSize];
+		
+		for(int l=0;l < bLevel;l++){
+		    for(int x=0;x<bSize;x++){
+		        for(int y=0;y<bSize;y++){
+		            if(((l+x+y)%3)==0){
+		                board[l][x][y]=-3;
+		            }else if(((l+x+y)%5)==0){
+		                board[l][x][y]=-2;
+		            }else if(((l+x+y)%7)==0){
+		                board[l][x][y]=2;
+		            }else{
+		                board[l][x][y]=0;
+		            }       
+		        }
+		    }
+		}
+		
 	}
 	//accesor methods
 	public int getSize() {
