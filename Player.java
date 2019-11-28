@@ -114,4 +114,5 @@ public class Player {
 				getName(),getLevel(),getX(),getY(),getEnergy());
 		return info;
 	}
+	
 }

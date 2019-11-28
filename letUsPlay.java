@@ -21,7 +21,7 @@ public class letUsPlay {
 		int bDec; // variable that will hold the decision for board setup of the player
 		int numPlayers=0; // variable that holds the number of players
 		String nDec;  //Variable that will input players name
-		
+		int turn=0;
 		banner();
 		System.out.println("The default game board has 3 levels and each level has a 4x4 board.\n"+
 				"You can use this default board size or change the size");
@@ -67,19 +67,74 @@ public class letUsPlay {
 		//Player name prompt and definition
 		while(numPlayers<2) {
 			System.out.print("What is Player "+(numPlayers+1)+"'s name (one word only): ");
+			 nDec = input.nextLine();
 		    while (!input.hasNext("[A-Za-z]+")) {
-		        System.out.println("Nope, that's not it!");
-		        input.next();
+		        System.out.print("Nope, that's not a valid name! Try again with no number :");
+		       nDec=input.nextLine();
 		    }
 		    nDec = input.next();
-		    System.out.println("Thank you! Got " + nDec);
+		    System.out.println("Thank you! Your name will be: " + nDec);
 			players[numPlayers]=new Player(nDec);
 			numPlayers++;
 		}
+		turn=(int) (Math.random()*2);
+		System.out.println("\nThe game has started "+players[turn].getName()+" goes first"+
+						   "\n==============================================");
+		//This will change the order of the two players so that the player that got to go
+		//first will always go first
+		if (turn==1) {
+			Player hold=new Player(players[0]);
+			players[0]=new Player(players[1]);
+			players[1]=new Player(hold);
+		}
+		//round repetition
+		while(!hasWon(players[0],players[1],map)){
+			//roll the dice of each player
+			for(int r=0;r<2;r++) {
+				System.out.println("It is "+ players[r].getName()+"'s turn");
+				die.rollDice();
+				System.out.println("\t"+players[r].getName()+" you rolled "+die);
+				//check to see if the rolled dice are a double, if so energy increase
+				if(die.isDouble()) {
+					players[r].setEnergy(players[r].getEnergy()+2);
+					System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
+				}		
+				//
+				
+			}
+			//wait for a key to be pressed in order for the round to be over
+			System.out.print("Press any Key to continue to the next Round");
+			input.next().charAt(0);
+			System.out.println("\n=============================================================================================="+
+					"======================");
+			
+		}
+		if(players[0].won(map)) 
+			System.out.println("The weiner is "+players[0].getName()+" you're a GOAT! congratulations");
+		else
+			System.out.println("The weiner is "+players[1].getName()+" you're a GOAT! congratulations");
+		System.out.println("Thank you for playing until next time peasant!");
+	}
 	
+	public static boolean hasWon(Player p1,Player p2,Board mp) {
+		if(p1.won(mp)||p2.won(mp)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public static Player calcLocation(Player l1,Dice q1,Board og) {
+		int sz=og.getSize();
+		int lvl=og.getLevel();
+		Player nextPlace=new Player(l1.getLevel(),l1.getX(),l1.getY());
+		return nextPlace;
+	}
+	
+	public void moveLocation(int d1,int d2) {
 		
 	}
-
+	
 	static void banner() {
 		System.out.println("      *_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*"+
 				         "\n      *                                           *"+
