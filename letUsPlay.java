@@ -99,9 +99,16 @@ public class letUsPlay {
 					players[r].setEnergy(players[r].getEnergy()+2);
 					System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
 				}		
-				//
+				//estimate the new location of the player
+				players[r]=calcLocation(players[r],die,map);
 				
 			}
+			//Check if players are in the exact same spot and challenge
+			if(players[0].equals(players[1])) {
+				System.out.println("ok both are i nthe same spot challenge time!");
+			}
+			
+			
 			//wait for a key to be pressed in order for the round to be over
 			System.out.print("Press any Key to continue to the next Round");
 			input.next().charAt(0);
