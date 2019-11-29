@@ -53,8 +53,8 @@ public class Player {
 	public void setX(int x2) {
 		this.x=x2;
 	}
-	public void sety(int y2) {
-		this.x=y2;
+	public void setY(int y2) {
+		this.y=y2;
 	}
 	public void setLevel(int l1) {
 		this.level=l1;
