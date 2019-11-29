@@ -44,4 +44,8 @@ public class Dice {
 	public boolean isDouble() {
 		return(this.die1==this.die2);
 	}
+	//Method that returns the addition of both dice
+	public int dieSum() {
+		return (die1+die2);
+	}
 }

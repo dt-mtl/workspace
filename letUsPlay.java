@@ -14,6 +14,7 @@ public class letUsPlay {
 		//Game board setup
 		Dice die=new Dice(); // creation of the dice of the game
 		Player players[] =new Player[2]; //Player array that will hold the two players
+		Player holders[] = new Player[2]; //player holder for moving them to their new designated location
 		Board map= new Board(); //BOard that shall be used in the game, already defined by deafult
 		Scanner input=new Scanner(System.in); //scanner holder
 		int lDec; // variable that will hold the amount of levels desired by player
@@ -83,9 +84,9 @@ public class letUsPlay {
 		//This will change the order of the two players so that the player that got to go
 		//first will always go first
 		if (turn==1) {
-			Player hold=new Player(players[0]);
+			holders[0]=new Player(players[0]);
 			players[0]=new Player(players[1]);
-			players[1]=new Player(hold);
+			players[1]=new Player(holders[0]);
 		}
 		//round repetition
 		while(!hasWon(players[0],players[1],map)){
@@ -100,12 +101,12 @@ public class letUsPlay {
 					System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
 				}		
 				//estimate the new location of the player
-				players[r]=calcLocation(players[r],die,map);
+				holders[r]=calcLocation(players[r],die,map);
 				
 			}
 			//Check if players are in the exact same spot and challenge
-			if(players[0].equals(players[1])) {
-				System.out.println("ok both are i nthe same spot challenge time!");
+			if(holders[0].equals(holders[1])) {
+				System.out.println("ok both are in the same spot challenge time!");
 			}
 			
 			
@@ -121,6 +122,7 @@ public class letUsPlay {
 		else
 			System.out.println("The weiner is "+players[1].getName()+" you're a GOAT! congratulations");
 		System.out.println("Thank you for playing until next time peasant!");
+		input.close();
 	}
 	
 	public static boolean hasWon(Player p1,Player p2,Board mp) {
@@ -130,14 +132,42 @@ public class letUsPlay {
 			return false;
 		}
 	}
-	
+	/*
 	public static Player calcLocation(Player l1,Dice q1,Board og) {
 		int sz=og.getSize();
 		int lvl=og.getLevel();
+		int sumD=q1.dieSum();
+		int xMove=l1.getX()+sumD/sz;
+		int yMove=l1.getY()+sumD%sz;
 		Player nextPlace=new Player(l1.getLevel(),l1.getX(),l1.getY());
+		if(yMove>sz) {
+			nextPlace.setX(xMove);
+			nextPlace.setY(yMove%sz);
+		}else if(xMove>sz) {
+			nextPlace.setX(xMove%sz);
+			nextPlace.setLevel(l1.getY()+1);
+			if(nextPlace.getLevel()>=lvl) {
+				nextPlace.setX(l1.getX());
+				nextPlace.setEnergy(l1.getEnergy()-2);
+			}
+		}else if (xMove>sz&&yMove>sz) {
+			nextPlace.setY(yMove%sz);
+			xMove=(yMove/sz)+xMove;
+			nextPlace.setX(xMove%sz);
+			nextPlace.setLevel(l1.getY()+1);
+			if(nextPlace.getLevel()>=lvl) {
+				nextPlace.setX(l1.getX());
+				nextPlace.setY(l1.getY());
+				nextPlace.setEnergy(l1.getEnergy()-2);
+			}
+		}else {
+		//6 C 1
+			nextPlace.setX(xMove);
+			nextPlace.setY(yMove);
+		}
 		return nextPlace;
 	}
-	
+	*/
 	public void moveLocation(int d1,int d2) {
 		
 	}
