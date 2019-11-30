@@ -99,12 +99,12 @@ public class Player {
 	
 	//equals method
 	public boolean equals(Player p2) {
-	
 		
-		
-		if(this.x==p2.getX()&&this.y==p2.getY()&&this.level==p2.getLevel())
+		if(this.x==p2.getX() && this.y==p2.getY() && this.level==p2.getLevel()) {
 			return true;
-		return false;
+		}else {	
+			return false;
+		}
 	}
 	
 	// To string method

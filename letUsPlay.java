@@ -23,6 +23,7 @@ public class letUsPlay {
 		int numPlayers=0; // variable that holds the number of players
 		String nDec;  //Variable that will input players name
 		int turn=0;
+		int mapEnergy;
 		banner();
 		System.out.println("The default game board has 3 levels and each level has a 4x4 board.\n"+
 				"You can use this default board size or change the size");
@@ -92,24 +93,52 @@ public class letUsPlay {
 		while(!hasWon(players[0],players[1],map)){
 			//roll the dice of each player
 			for(int r=0;r<2;r++) {
-				System.out.println("It is "+ players[r].getName()+"'s turn");
-				die.rollDice();
-				System.out.println("\t"+players[r].getName()+" you rolled "+die);
-				//check to see if the rolled dice are a double, if so energy increase
-				if(die.isDouble()) {
-					players[r].setEnergy(players[r].getEnergy()+2);
-					System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
-				}		
-				//estimate the new location of the player
-				holders[r]=calcLocation(players[r],die,map);
-				
+				//integrate algorithm that rolls three times for some one low on energy
+				if(players[r].getEnergy()<=0) {
+					for(int e=0;e<3;e++) {
+						die.rollDice();
+						System.out.println("\t"+players[r].getName()+" you rolled "+die);
+						//check to see if the rolled dice are a double, if so energy increase
+						if(die.isDouble()) {
+							players[r].setEnergy(players[r].getEnergy()+2);
+							System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
+					}
+			  	}	
+				if(players[r].getEnergy()>0) {
+					System.out.println("It is "+ players[r].getName()+"'s turn");
+					die.rollDice();
+					System.out.println("\t"+players[r].getName()+" you rolled "+die);
+					//check to see if the rolled dice are a double, if so energy increase
+					if(die.isDouble()) {
+						players[r].setEnergy(players[r].getEnergy()+2);
+						System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
+					}		
+					//estimate the new location of the player
+					holders[r]=calcLocation(players[r],die,map);
+					mapEnergy=map.getEnergyAdj(holders[r].getLevel(), holders[r].getX(), holders[r].getY());
+					holders[r].setEnergy(holders[r].getEnergy()+mapEnergy);
+					System.out.println("\tYour energy is adjusted by"+mapEnergy+" for landing at ("+holders[r].getX()+","+
+					holders[r].getY()+") at level "+holders[r].getLevel());
+				}
 			}
 			//Check if players are in the exact same spot and challenge
 			if(holders[0].equals(holders[1])) {
 				System.out.println("ok both are in the same spot challenge time!");
+			}else {
+				for(int e=0;e<2;e++) {
+					players[e].setX(holders[e].getX());
+					players[e].setY(holders[e].getY());
+					players[e].setLevel(holders[e].getLevel());
+					players[e].setEnergy(map.getEnergyAdj(players[e].getLevel(), players[e].getX(), players[e].getY()));
+				}
 			}
 			
-			
+			//End of round
+			System.out.println("At the end of this round:");
+			for(int w=0;w<2;w++) {
+				System.out.println("\t"+players[w].getName()+" is on level "+players[w].getLevel()+" at location ("+players[w].getX()+","+
+						players[w].getY()+") and has "+players[w].getEnergy()+" units of energy");
+			}
 			//wait for a key to be pressed in order for the round to be over
 			System.out.print("Press any Key to continue to the next Round");
 			input.next().charAt(0);
@@ -123,6 +152,7 @@ public class letUsPlay {
 			System.out.println("The weiner is "+players[1].getName()+" you're a GOAT! congratulations");
 		System.out.println("Thank you for playing until next time peasant!");
 		input.close();
+		}
 	}
 	
 	public static boolean hasWon(Player p1,Player p2,Board mp) {
@@ -132,42 +162,44 @@ public class letUsPlay {
 			return false;
 		}
 	}
-	/*
+	//this masterpiece of ducking code makes sure that my player moves accordingly and well :'(
 	public static Player calcLocation(Player l1,Dice q1,Board og) {
 		int sz=og.getSize();
-		int lvl=og.getLevel();
 		int sumD=q1.dieSum();
-		int xMove=l1.getX()+sumD/sz;
-		int yMove=l1.getY()+sumD%sz;
-		Player nextPlace=new Player(l1.getLevel(),l1.getX(),l1.getY());
-		if(yMove>sz) {
-			nextPlace.setX(xMove);
-			nextPlace.setY(yMove%sz);
-		}else if(xMove>sz) {
-			nextPlace.setX(xMove%sz);
-			nextPlace.setLevel(l1.getY()+1);
-			if(nextPlace.getLevel()>=lvl) {
-				nextPlace.setX(l1.getX());
-				nextPlace.setEnergy(l1.getEnergy()-2);
-			}
-		}else if (xMove>sz&&yMove>sz) {
-			nextPlace.setY(yMove%sz);
-			xMove=(yMove/sz)+xMove;
-			nextPlace.setX(xMove%sz);
-			nextPlace.setLevel(l1.getY()+1);
-			if(nextPlace.getLevel()>=lvl) {
-				nextPlace.setX(l1.getX());
-				nextPlace.setY(l1.getY());
-				nextPlace.setEnergy(l1.getEnergy()-2);
-			}
-		}else {
-		//6 C 1
-			nextPlace.setX(xMove);
-			nextPlace.setY(yMove);
+		int xMove=l1.getX()+(sumD/sz);
+		int yMove=l1.getY()+(sumD%sz);
+		Player holding= new Player(l1.getLevel(),l1.getX(),l1.getY());
+		
+		//this will always give the correct space for Y location
+		if (yMove>=sz) { 
+			yMove=yMove%sz;
+			xMove++;
+		} 
+		//now adjust x according if it is ever off the board
+		if(xMove>=sz){
+			xMove=xMove%sz;
+			holding.setLevel(holding.getLevel()+1);
 		}
-		return nextPlace;
+		holding.setX(xMove);
+		holding.setY(yMove);
+		
+		//this will only execute if the player is going to a next level and 
+		//and the player is on the last level
+		if(holding.getLevel()>=og.getLevel()) {
+			l1.setX(l1.getX());
+			l1.setY(l1.getY());
+			l1.setEnergy(l1.getEnergy()-2);
+			l1.setLevel(l1.getLevel());
+		}else {
+		//otherwise always move the player unless he is about to win
+			l1.setX(holding.getX());
+			l1.setY(holding.getY());
+			l1.setLevel(holding.getLevel());
+		}
+		return l1;
 	}
-	*/
+
+	
 	public void moveLocation(int d1,int d2) {
 		
 	}
