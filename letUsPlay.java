@@ -1,7 +1,12 @@
 /* -------------------------------------------------------
 // Assignment 4 Nancy's 3D Warrior Game
  * 
- * 
+ * This class puts into play the other predefined classes Board, Dice and Player. This class will setup
+ * both the players, the board game map to be used, and the dice that will be used through out the game.
+ * this class follows the rules of Nancy's 3D warrior game as per assignment hand out and attempts to give do a 
+ * full game play. While some functions work perfectly minor bugs hinder this class from working as desired. 
+ * I hope that the work given will maximize as many partial marks as possible, in addition to giving you the
+ * pleasure of enjoying Nancy's 3D warrior game.
  * 
 // Written by: Daniel Torres 40101143
 // For COMP 248 Section (FF) � Fall 2019
@@ -20,10 +25,13 @@ public class letUsPlay {
 		int lDec; // variable that will hold the amount of levels desired by player
 		int sDec; // variable that will hold the board size desired by player
 		int bDec; // variable that will hold the decision for board setup of the player
+		int cDec; // Variable that will hold the decision whether a player whishes to challenge or not.
 		int numPlayers=0; // variable that holds the number of players
 		String nDec;  //Variable that will input players name
-		int turn=0;
-		int mapEnergy;
+		int turn=0;	//turn variable that will decide who goes next
+		int mapEnergy; //a holder variable for the specific energy at a location
+		int holderEnergy; // a variable that will hold a players energy level before being modified.
+		
 		banner();
 		System.out.println("The default game board has 3 levels and each level has a 4x4 board.\n"+
 				"You can use this default board size or change the size");
@@ -79,6 +87,8 @@ public class letUsPlay {
 			players[numPlayers]=new Player(nDec);
 			numPlayers++;
 		}
+		holders[0]=new Player(players[0]);
+		holders[1]=new Player(players[0]);
 		turn=(int) (Math.random()*2);
 		System.out.println("\nThe game has started "+players[turn].getName()+" goes first"+
 						   "\n==============================================");
@@ -89,10 +99,15 @@ public class letUsPlay {
 			players[0]=new Player(players[1]);
 			players[1]=new Player(holders[0]);
 		}
-		//round repetition
+		//round repetition- works on the principle that if the hasWon method does not return true it will execute every round
 		while(!hasWon(players[0],players[1],map)){
 			//roll the dice of each player
-			for(int r=0;r<2;r++) {
+			for(int r=0, o=0;r<2;r++) {
+				if(r==0) {
+					o=1; //variable indicating the opposite player
+				}else {
+					o=0; //variable indicating the opposite player
+				}	
 				//integrate algorithm that rolls three times for some one low on energy
 				if(players[r].getEnergy()<=0) {
 					for(int e=0;e<3;e++) {
@@ -102,7 +117,8 @@ public class letUsPlay {
 						if(die.isDouble()) {
 							players[r].setEnergy(players[r].getEnergy()+2);
 							System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
-					}
+						}
+					}	
 			  	}	
 				if(players[r].getEnergy()>0) {
 					System.out.println("It is "+ players[r].getName()+"'s turn");
@@ -112,26 +128,56 @@ public class letUsPlay {
 					if(die.isDouble()) {
 						players[r].setEnergy(players[r].getEnergy()+2);
 						System.out.println("\tCongratulations you rolled double "+die.getDie1()+". Your energy went up by 2 units");
-					}		
-					//estimate the new location of the player
-					holders[r]=calcLocation(players[r],die,map);
-					mapEnergy=map.getEnergyAdj(holders[r].getLevel(), holders[r].getX(), holders[r].getY());
-					holders[r].setEnergy(holders[r].getEnergy()+mapEnergy);
-					System.out.println("\tYour energy is adjusted by"+mapEnergy+" for landing at ("+holders[r].getX()+","+
-					holders[r].getY()+") at level "+holders[r].getLevel());
-				}
+					}
+				}	
+				//estimate the new location of the player
+				holders[r]=calcLocation(players[r],die,map);
+				//Check if players are in the exact same spot and challenge
+				if(holders[r].equals(players[o])) {
+					System.out.println("Player "+players[o].getName()+" is at your new location!");
+					System.out.println("what would you like to do?");
+					System.out.println("\t0 - Challenge and risk loosing 50% of your energy units if you lose"
+							+"\n\t\tor move to new location and get 50% of the other players energy units."+
+							"\n\t1 - to move down one level or move to (0,0) if at level 0 and lose 2 energy units");
+					cDec= input.nextInt();
+					while(cDec!=0||cDec!=-1) {
+						if(cDec==1) {
+							holders[r].setEnergy(players[r].getEnergy()-2);
+							if(players[r].getLevel()>0) {
+								players[r].setLevel(players[r].getLevel()-1);
+								holders[r].setLevel(players[r].getLevel());
+							}else {
+								holders[r].setX(0);
+								holders[r].setY(0);
+								holders[r].setLevel(0);
+							}
+							System.out.println("You forfeit");
+							break;
+						}else if(cDec==0) {
+							System.out.println("Challenge");
+							break;
+						}else {
+							System.out.print("Sorry but "+cDec+" is not a legal choice\n");
+							cDec=input.nextInt();
+						}
+					}
+				} 					
+			//this is where energy is adjusted as per the map however there is a bug here i cannot figure out.
+				mapEnergy=map.getEnergyAdj(holders[r].getLevel(), holders[r].getX(), holders[r].getY());
+				holderEnergy=holders[r].getEnergy();
+				holders[r].setEnergy(holderEnergy+mapEnergy);
+				System.out.println("\tYour energy is adjusted by "+mapEnergy+" for landing at ("+holders[r].getX()+","+
+				holders[r].getY()+") at level "+holders[r].getLevel());
+				
 			}
-			//Check if players are in the exact same spot and challenge
-			if(holders[0].equals(holders[1])) {
-				System.out.println("ok both are in the same spot challenge time!");
-			}else {
+			
 				for(int e=0;e<2;e++) {
 					players[e].setX(holders[e].getX());
 					players[e].setY(holders[e].getY());
 					players[e].setLevel(holders[e].getLevel());
 					players[e].setEnergy(map.getEnergyAdj(players[e].getLevel(), players[e].getX(), players[e].getY()));
 				}
-			}
+			
 			
 			//End of round
 			System.out.println("At the end of this round:");
@@ -147,13 +193,14 @@ public class letUsPlay {
 			
 		}
 		if(players[0].won(map)) 
-			System.out.println("The weiner is "+players[0].getName()+" you're a GOAT! congratulations");
+			System.out.println("The winner is "+players[0].getName()+" you're a GOAT! congratulations");
 		else
-			System.out.println("The weiner is "+players[1].getName()+" you're a GOAT! congratulations");
-		System.out.println("Thank you for playing until next time peasant!");
+			System.out.println("The winner is "+players[1].getName()+" you're a GOAT! congratulations");
+		System.out.println("Thank you for playing until next time!");
 		input.close();
-		}
+		
 	}
+
 	
 	public static boolean hasWon(Player p1,Player p2,Board mp) {
 		if(p1.won(mp)||p2.won(mp)) {

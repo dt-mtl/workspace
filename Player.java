@@ -1,18 +1,21 @@
 /* -------------------------------------------------------
-// Assignment 4 Nancy's 3D Warrior Game
+// Assignment 4 Nancy's 3D Warrior Game- PLayer Class
  * 
- * 
+ * This is the class for object players. The class will create the players and has three different constructors,
+ * in addition to mutator and accessor methods required. Additional methods include a toPrint method that will
+ * output a short description of the player, in addition to a method that verifies if players are in the same 
+ * location and if a player has won.
  * 
 // Written by: Daniel Torres 40101143
 // For COMP 248 Section (FF) � Fall 2019
 // --------------------------------------------------------*/
 public class Player {
 	//Five instance variable required for this object class
-	private String name;
-	public int x;
-	public int y;
-	public int level;
-	public int energy;
+	private String name; // name of player
+	public int x;  //position variable
+	public int y;	//position variable
+	public int level;	//position variable
+	public int energy;	//energy counter variable
 	
 	//default constructor
 	public Player() {
@@ -89,7 +92,7 @@ public class Player {
 		level=p1.getLevel();
 		
 	}
-	// won board method
+	// won board method- method that verifies if one of the players has won.
 	public boolean won(Board b1) {
 		
 		if(this.x==b1.getSize()-1&&this.y==b1.getSize()-1&&this.level==b1.getLevel()-1)
@@ -97,7 +100,7 @@ public class Player {
 		return false;
 	}
 	
-	//equals method
+	//equals method-checks that players are in the same location
 	public boolean equals(Player p2) {
 		
 		if(this.x==p2.getX() && this.y==p2.getY() && this.level==p2.getLevel()) {
