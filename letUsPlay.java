@@ -163,7 +163,7 @@ public class letUsPlay {
 						}
 					}
 				} 					
-			//this is where energy is adjusted as per the map however there is a bug here i cannot figure out.
+			//this is where energy is adjusted as per the map
 				mapEnergy=map.getEnergyAdj(holders[r].getLevel(), holders[r].getX(), holders[r].getY());
 				holderEnergy=holders[r].getEnergy();
 				holderEnergy=mapEnergy+holderEnergy;
@@ -173,13 +173,13 @@ public class letUsPlay {
 				System.out.println("energy is : "+players[r].getEnergy());
 				
 			}
-			System.out.println("energy problem? :"+holders[0].getEnergy()+" "+ holders[0].getEnergy()+"p: "+players[0].getEnergy() );
+			
 				for(int e=0;e<2;e++) {
 					players[e].setX(holders[e].getX());
 					players[e].setY(holders[e].getY());
 					players[e].setLevel(holders[e].getLevel());
 					//problem is here
-					players[e].setEnergy(map.getEnergyAdj(players[e].getLevel(), players[e].getX(), players[e].getY()));
+					players[e].setEnergy(holders[e].getEnerg());
 				}
 			
 			
