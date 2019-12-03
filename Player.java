@@ -46,11 +46,11 @@ public class Player {
 	}
 	//5. A copy constructor which duplicates the passed Player object?
 	public Player(Player p3) {
-		name=p3.getName();
-		x=p3.getX();
-		y=p3.getX();
-		level=p3.getLevel();
-		energy=p3.getEnergy();
+		this.name=p3.getName();
+		this.x=p3.getX();
+		this.y=p3.getX();
+		this.level=p3.getLevel();
+		this.energy=p3.getEnergy();
 	}
 	//mutator methods
 	public void setX(int x2) {

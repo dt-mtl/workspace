@@ -88,7 +88,7 @@ public class letUsPlay {
 			numPlayers++;
 		}
 		holders[0]=new Player(players[0]);
-		holders[1]=new Player(players[0]);
+		holders[1]=new Player(players[1]);
 		turn=(int) (Math.random()*2);
 		System.out.println("\nThe game has started "+players[turn].getName()+" goes first"+
 						   "\n==============================================");
@@ -100,6 +100,7 @@ public class letUsPlay {
 			players[1]=new Player(holders[0]);
 		}
 		//round repetition- works on the principle that if the hasWon method does not return true it will execute every round
+		turn=0;
 		while(!hasWon(players[0],players[1],map)){
 			//roll the dice of each player
 			for(int r=0, o=0;r<2;r++) {
@@ -133,7 +134,7 @@ public class letUsPlay {
 				//estimate the new location of the player
 				holders[r]=calcLocation(players[r],die,map);
 				//Check if players are in the exact same spot and challenge
-				if(holders[r].equals(players[o])) {
+				if(holders[r].equals(players[o])&&turn!=0) {
 					System.out.println("Player "+players[o].getName()+" is at your new location!");
 					System.out.println("what would you like to do?");
 					System.out.println("\t0 - Challenge and risk loosing 50% of your energy units if you lose"
@@ -165,16 +166,19 @@ public class letUsPlay {
 			//this is where energy is adjusted as per the map however there is a bug here i cannot figure out.
 				mapEnergy=map.getEnergyAdj(holders[r].getLevel(), holders[r].getX(), holders[r].getY());
 				holderEnergy=holders[r].getEnergy();
-				holders[r].setEnergy(holderEnergy+mapEnergy);
+				holderEnergy=mapEnergy+holderEnergy;
+				holders[r].setEnergy(holderEnergy);
 				System.out.println("\tYour energy is adjusted by "+mapEnergy+" for landing at ("+holders[r].getX()+","+
 				holders[r].getY()+") at level "+holders[r].getLevel());
+				System.out.println("energy is : "+players[r].getEnergy());
 				
 			}
-			
+			System.out.println("energy problem? :"+holders[0].getEnergy()+" "+ holders[0].getEnergy()+"p: "+players[0].getEnergy() );
 				for(int e=0;e<2;e++) {
 					players[e].setX(holders[e].getX());
 					players[e].setY(holders[e].getY());
 					players[e].setLevel(holders[e].getLevel());
+					//problem is here
 					players[e].setEnergy(map.getEnergyAdj(players[e].getLevel(), players[e].getX(), players[e].getY()));
 				}
 			
@@ -185,6 +189,7 @@ public class letUsPlay {
 				System.out.println("\t"+players[w].getName()+" is on level "+players[w].getLevel()+" at location ("+players[w].getX()+","+
 						players[w].getY()+") and has "+players[w].getEnergy()+" units of energy");
 			}
+			turn++;
 			//wait for a key to be pressed in order for the round to be over
 			System.out.print("Press any Key to continue to the next Round");
 			input.next().charAt(0);
