@@ -175,11 +175,14 @@ public class letUsPlay {
 			}
 			
 				for(int e=0;e<2;e++) {
+				    if(!players[e].equals(holders[e])){
+				        players[e].setEnergy(holders[e].getEnergy());
+				    }
 					players[e].setX(holders[e].getX());
 					players[e].setY(holders[e].getY());
 					players[e].setLevel(holders[e].getLevel());
 					//problem is here
-					players[e].setEnergy(holders[e].getEnergy());
+					
 				}
 			
 			
