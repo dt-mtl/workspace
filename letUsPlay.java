@@ -170,7 +170,7 @@ public class letUsPlay {
 				holders[r].setEnergy(holderEnergy);
 				System.out.println("\tYour energy is adjusted by "+mapEnergy+" for landing at ("+holders[r].getX()+","+
 				holders[r].getY()+") at level "+holders[r].getLevel());
-				System.out.println("energy is : "+players[r].getEnergy());
+				
 				
 			}
 			
