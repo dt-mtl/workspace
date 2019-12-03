@@ -179,7 +179,7 @@ public class letUsPlay {
 					players[e].setY(holders[e].getY());
 					players[e].setLevel(holders[e].getLevel());
 					//problem is here
-					players[e].setEnergy(holders[e].getEnerg());
+					players[e].setEnergy(holders[e].getEnergy());
 				}
 			
 			
